@@ -54,6 +54,10 @@ public final class GirlRegistry {
         add(new Girl(name, rarity, tex, 48, 64));
     }
 
+    private static boolean isCustom(Girl g) {
+        return g.texture().getPath().startsWith("custom/");
+    }
+
     private static void add(Girl g) {
         GIRLS.computeIfAbsent(g.rarity(), r -> new ArrayList<>()).add(g);
     }
@@ -63,7 +67,11 @@ public final class GirlRegistry {
         ensureCustomLoaded();
         for (int i = rarity.ordinal(); i >= 0; i--) {
             List<Girl> list = GIRLS.get(Rarity.values()[i]);
-            if (list != null && !list.isEmpty()) return list.get(rng.nextInt(list.size()));
+            if (list == null || list.isEmpty()) continue;
+            // Eigene Bilder ersetzen die eingebauten Figuren dieser Seltenheit
+            List<Girl> custom = list.stream().filter(GirlRegistry::isCustom).toList();
+            List<Girl> pool = custom.isEmpty() ? list : custom;
+            return pool.get(rng.nextInt(pool.size()));
         }
         throw new IllegalStateException("Keine Girls registriert");
     }
@@ -77,7 +85,7 @@ public final class GirlRegistry {
 
     /** Lädt eigene Bilder neu. Gibt die Anzahl geladener Bilder zurück. */
     public static int reload() {
-        for (List<Girl> list : GIRLS.values()) list.removeIf(g -> g.texture().getPath().startsWith("custom/"));
+        for (List<Girl> list : GIRLS.values()) list.removeIf(GirlRegistry::isCustom);
         customLoaded = true;
         loadCustom();
         return customCount;
