@@ -14,8 +14,8 @@ import net.minecraft.resources.Identifier;
  * Ablauf:
  *  1. NucleusChatListener liest die Hypixel-Chatnachrichten mit
  *     ("✦ You placed the ... Crystal!" und den "CRYSTAL NUCLEUS LOOT BUNDLE"-Block).
- *  2. Sobald der Reward-Block komplett ist, startet RewardAnimation.
- *  3. RewardAnimation zeichnet die Animation als HUD-Element über den Bildschirm.
+ *  2. Sobald der Reward-Block komplett ist, startet SpinAnimation.
+ *  3. SpinAnimation zeichnet die Animation als HUD-Element über den Bildschirm.
  */
 public class NucleusAnimationClient implements ClientModInitializer {
 
@@ -34,13 +34,13 @@ public class NucleusAnimationClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             listener.tick();
-            RewardAnimation.INSTANCE.tick(client);
+            SpinAnimation.INSTANCE.tick(client);
         });
 
         HudElementRegistry.attachElementAfter(
                 VanillaHudElements.CHAT,
                 Identifier.fromNamespaceAndPath(MOD_ID, "reward_animation"),
-                RewardAnimation.INSTANCE::render
+                SpinAnimation.INSTANCE::render
         );
 
         ClientCommandRegistrationCallback.EVENT.register(

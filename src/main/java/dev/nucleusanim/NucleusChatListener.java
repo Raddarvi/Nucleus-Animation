@@ -108,13 +108,13 @@ final class NucleusChatListener {
             // Reward-Liste kam nicht an (z.B. von einer anderen Mod versteckt) –
             // trotzdem die Animation zeigen.
             earnedAt = -1;
-            RewardAnimation.INSTANCE.start(List.of(), new ArrayList<>(placedCrystals));
+            SpinAnimation.INSTANCE.start(List.of());
             placedCrystals.clear();
         }
     }
 
     private void finish() {
-        RewardAnimation.INSTANCE.start(new ArrayList<>(rewards), new ArrayList<>(placedCrystals));
+        SpinAnimation.INSTANCE.start(new ArrayList<>(rewards));
         rewards.clear();
         placedCrystals.clear();
         earnedAt = -1;
